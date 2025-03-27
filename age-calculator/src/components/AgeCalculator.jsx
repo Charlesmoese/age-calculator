@@ -9,43 +9,34 @@ const AgeCalculator = () => {
   const [error, setError] = useState('');
 
   const isValidDate = (day, month, year) => {
-    const dayNum = Number(day);
-    const monthNum = Number(month);
-    const yearNum = Number(year);
+  const dayNum = Number(day);
+  const monthNum = Number(month);
+  const yearNum = Number(year);
 
-    // Verifica se o ano é válido
-    if (isNaN(yearNum) || yearNum < 1) {
-      setError('Ano inválido. Insira um ano válido.');
-      return false;
-    }
+  // Verifica se são números válidos
+  if (isNaN(dayNum) || isNaN(monthNum) || isNaN(yearNum)) {
+    setError("Insira apenas números válidos");
+    return false;
+  }
 
-    // Verifica se o mês é válido
-    if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
-      setError('Mês inválido. Insira um mês entre 1 e 12.');
-      return false;
-    }
+  // Valida mês (1-12)
+  if (monthNum < 1 || monthNum > 12) {
+    setError("Mês inválido. Insira entre 1 e 12.");
+    return false;
+  }
 
-    // Verifica se o dia é válido
-    if (isNaN(dayNum) || dayNum < 1 || dayNum > 31) {
-      setError('Dia inválido. Insira um dia entre 1 e 31.');
-      return false;
-    }
+  // Valida ano positivo
+  if (yearNum < 1) {
+    setError("Ano inválido.");
+    return false;
+  }
 
-    // Cria uma data com os valores fornecidos
-    const date = new Date(yearNum, monthNum - 1, dayNum);
-
-    // Verifica se a data criada corresponde aos valores fornecidos
-    if (
-      date.getFullYear() !== yearNum ||
-      date.getMonth() !== monthNum - 1 ||
-      date.getDate() !== dayNum
-    ) {
-      setError('Data inválida. Verifique o dia, mês ou ano.');
-      return false;
-    }
-
-    return true;
-  };
+  // Verifica bissexto 30 e 31
+  const lastDayOfMonth = new Date(yearNum, monthNum, 0).getDate();
+  if (dayNum < 1 || dayNum > lastDayOfMonth) {
+    setError(`Dia inválido. O mês ${monthNum} tem até ${lastDayOfMonth} dias.`);
+    return false;
+  }
 
   const isFutureDate = (day, month, year) => {
     const today = new Date();
