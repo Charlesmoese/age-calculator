@@ -13,23 +13,28 @@ const AgeCalculator = () => {
     const monthNum = Number(month);
     const yearNum = Number(year);
 
+    // Verifica se o ano é válido
     if (isNaN(yearNum) || yearNum < 1) {
       setError('Ano inválido. Insira um ano válido.');
       return false;
     }
 
+    // Verifica se o mês é válido
     if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
       setError('Mês inválido. Insira um mês entre 1 e 12.');
       return false;
     }
 
+    // Verifica se o dia é válido
     if (isNaN(dayNum) || dayNum < 1 || dayNum > 31) {
       setError('Dia inválido. Insira um dia entre 1 e 31.');
       return false;
     }
 
+    // Cria uma data com os valores fornecidos
     const date = new Date(yearNum, monthNum - 1, dayNum);
 
+    // Verifica se a data criada corresponde aos valores fornecidos
     if (
       date.getFullYear() !== yearNum ||
       date.getMonth() !== monthNum - 1 ||
@@ -42,14 +47,29 @@ const AgeCalculator = () => {
     return true;
   };
 
+  const isFutureDate = (day, month, year) => {
+    const today = new Date();
+    const inputDate = new Date(year, month - 1, day);
+    return inputDate > today;
+  };
+
   const calculateAge = () => {
+    // Verifica se todos os campos estão preenchidos
     if (!day || !month || !year) {
       setError('Por favor, preencha todos os campos.');
       setAge({ years: '--', months: '--', days: '--' });
       return;
     }
 
+    // Verifica se a data é válida
     if (!isValidDate(day, month, year)) {
+      setAge({ years: '--', months: '--', days: '--' });
+      return;
+    }
+
+    // Verifica se a data é futura
+    if (isFutureDate(day, month, year)) {
+      setError('Data futura. Insira uma data do passado ou presente.');
       setAge({ years: '--', months: '--', days: '--' });
       return;
     }
@@ -63,6 +83,7 @@ const AgeCalculator = () => {
     let months = today.getMonth() - birthDate.getMonth();
     let days = today.getDate() - birthDate.getDate();
 
+    // Ajusta os meses e dias se necessário
     if (days < 0) {
       months--;
       days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
